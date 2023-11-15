@@ -4,23 +4,23 @@ $found = $remoteport -match '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}';
 if( $found ){
   $remoteport = $matches[0];
 } else{
-  echo "The Script Exited, the ip address of WSL 2 cannot be found";
+  echo "IP 주소를 찾을 수 없습니다.";
   exit;
 }
 
 #[Ports]
-#All the ports you want to forward separated by coma
+#기본 포워딩 포트, 80, 443, 5000, 22, 3390
 $ports=@(80,443,5000,22,3390);
 
 #[Static ip]
-#You can change the addr to your ip config to listen to a specific address
+#고정 IP 설정 ( 건들지 마세요 )
 $addr='0.0.0.0';
 $ports_a = $ports -join ",";
 
-#Remove Firewall Exception Rules
+#방화벽 접근제어 해제
 iex "Remove-NetFireWallRule -DisplayName 'WSL 2 Firewall Unlock' ";
 
-#adding Exception Rules for inbound and outbound Rules
+# 방화벽 룰 추가
 iex "New-NetFireWallRule -DisplayName 'WSL 2 Firewall Unlock' -Direction Outbound -LocalPort $ports_a -Action Allow -Protocol TCP";
 iex "New-NetFireWallRule -DisplayName 'WSL 2 Firewall Unlock' -Direction Inbound -LocalPort $ports_a -Action Allow -Protocol TCP";
 
